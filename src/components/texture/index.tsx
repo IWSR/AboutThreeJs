@@ -1,7 +1,6 @@
 import { extend, Object3DNode, useLoader, useThree } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
-/* tslint:disable-next-line */
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { useControls } from "leva";
 
