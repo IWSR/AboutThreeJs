@@ -1,14 +1,8 @@
-import { extend, Object3DNode, useLoader, useThree } from "@react-three/fiber";
+import { extend, useLoader, useThree } from "@react-three/fiber";
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { useControls } from "leva";
-
-declare module "@react-three/fiber" {
-  interface ThreeElements {
-    orbitControls: Object3DNode<OrbitControls, typeof OrbitControls>;
-  }
-}
 
 extend({ OrbitControls });
 
@@ -74,7 +68,7 @@ function TextureTest() {
   // })
 
   useEffect(() => {
-    console.log(mesh)
+    console.log(mesh);
     if (mesh.current) {
       const material = mesh.current.material as THREE.Material;
       material.needsUpdate = true;

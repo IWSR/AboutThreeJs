@@ -1,7 +1,7 @@
-import { Canvas } from '@react-three/fiber'
-import TextureTest from './components/texture'
-import './styles/init.less'
-import './styles/app.less'
+import { Canvas } from "@react-three/fiber";
+import TextureTest from "./components/texture";
+import "./styles/init.less";
+import "./styles/app.less";
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
         <TextureTest />
       </Canvas>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
