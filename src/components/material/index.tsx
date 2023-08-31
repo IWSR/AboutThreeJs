@@ -7,11 +7,11 @@ import { useControls } from "leva";
 extend({ OrbitControls });
 
 type MaterialCachesTypes = {
-  MeshBasicMaterial: THREE.Material;
-  MeshNormalMaterial?: THREE.Material | null;
-  MeshMatcapMaterial?: THREE.Material | null;
-  MeshDepthMaterial?: THREE.Material | null;
-  MeshLambertMaterial?: THREE.Material | null;
+  MeshBasicMaterial: THREE.MeshBasicMaterial;
+  MeshNormalMaterial?: THREE.MeshNormalMaterial;
+  MeshMatcapMaterial?: THREE.MeshMatcapMaterial;
+  MeshDepthMaterial?: THREE.MeshDepthMaterial;
+  MeshLambertMaterial?: THREE.MeshLambertMaterial;
 };
 
 type MaterialType = keyof MaterialCachesTypes;
@@ -40,26 +40,26 @@ function MaterialTest() {
     /**
      * flatShading: (boolean)
      */
-    MeshNormalMaterial: null,
+    // MeshNormalMaterial: null,
     /**
      * matcap: (map)
      */
-    MeshMatcapMaterial: null,
+    // MeshMatcapMaterial: null,
     /**
      * MeshDepthMaterial will simply color the geometry in white if it's close to thenear and in black if it's close to the far value of the camera
      */
-    MeshDepthMaterial: null,
+    // MeshDepthMaterial: null,
     /**
      * MeshLambertMaterial will react to light
      */
-    MeshLambertMaterial: null,
+    // MeshLambertMaterial: null,
   });
 
   const sphere = useRef<THREE.Mesh>(null);
   const plane = useRef<THREE.Mesh>(null);
   const torus = useRef<THREE.Mesh>(null);
 
-  const [material, setMaterial] = useState<THREE.Material>(
+  const [material, setMaterial] = useState<MaterialCachesTypes[MaterialType]>(
     cache.current.MeshBasicMaterial,
   );
 
@@ -77,10 +77,16 @@ function MaterialTest() {
 
   useEffect(() => {
     let material = cache.current?.[materialType as MaterialType];
-
     if (!material) {
       material = new THREE[materialType as MaterialType]();
-      cache.current[materialType as MaterialType] = material;
+      switch (materialType) {
+        case "MeshMatcapMaterial":
+          (material as THREE.MeshMatcapMaterial).matcap = matcapTexture;
+          break;
+      }
+      (cache.current[
+        materialType as MaterialType
+      ] as MaterialCachesTypes[MaterialType]) = material;
     }
 
     setMaterial(material);
