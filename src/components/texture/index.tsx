@@ -90,7 +90,7 @@ function TextureTest() {
     <>
       <ambientLight intensity={2} />
       <mesh ref={mesh}>
-        <planeGeometry args={[2, 2, 10, 10]} />
+        <planeGeometry args={[2, 2, 100, 100]} />
         <meshStandardMaterial
           map={toggleMap && colorMap}
           alphaMap={toggleAlphaMap ? alphaMap : null}

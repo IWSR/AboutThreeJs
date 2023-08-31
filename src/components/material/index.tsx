@@ -14,6 +14,7 @@ type MaterialCachesTypes = {
   MeshLambertMaterial?: THREE.MeshLambertMaterial;
   MeshPhongMaterial?: THREE.MeshPhongMaterial;
   MeshToonMaterial?: THREE.MeshToonMaterial;
+  MeshStandardMaterial?: THREE.MeshStandardMaterial;
 };
 
 type MaterialType = keyof MaterialCachesTypes;
@@ -24,6 +25,17 @@ function MaterialTest() {
   const [matcapTexture, gradientsTexture] = useLoader(THREE.TextureLoader, [
     "/textures/matcaps/1.png",
     "/textures/gradients/5.jpg",
+  ]);
+
+  const [envMap] = useLoader(THREE.CubeTextureLoader, [
+    [
+      "/textures/environmentMaps/0/px.jpg",
+      "/textures/environmentMaps/0/nx.jpg",
+      "/textures/environmentMaps/0/py.jpg",
+      "/textures/environmentMaps/0/ny.jpg",
+      "/textures/environmentMaps/0/pz.jpg",
+      "/textures/environmentMaps/0/nz.jpg",
+    ],
   ]);
 
   console.log(gradientsTexture);
@@ -40,7 +52,7 @@ function MaterialTest() {
     cache.current.MeshBasicMaterial,
   );
 
-  const { materialType } = useControls({
+  const { materialType, metalness, roughness } = useControls({
     materialType: {
       options: {
         MeshBasicMaterial: "MeshBasicMaterial",
@@ -50,7 +62,20 @@ function MaterialTest() {
         MeshLambertMaterial: "MeshLambertMaterial",
         MeshPhongMaterial: "MeshPhongMaterial",
         MeshToonMaterial: "MeshToonMaterial",
+        MeshStandardMaterial: "MeshStandardMaterial",
       },
+    },
+    metalness: {
+      value: 0.5,
+      min: 0,
+      max: 1,
+      step: 0.1,
+    },
+    roughness: {
+      value: 0.5,
+      min: 0,
+      max: 1,
+      step: 0.1,
     },
   });
 
@@ -74,6 +99,10 @@ function MaterialTest() {
           gradientsTexture.generateMipmaps = false; // If generateMipmaps is set to true, Three.js will automatically create mipmaps for the texture. Remember that mipmaps consume memory
           (material as THREE.MeshToonMaterial).gradientMap = gradientsTexture;
           break;
+        case "MeshStandardMaterial":
+          // (material as THREE.MeshStandardMaterial).metalness = metalness;
+          (material as THREE.MeshStandardMaterial).envMap = envMap;
+          break;
       }
       (cache.current[
         materialType as MaterialType
@@ -81,11 +110,26 @@ function MaterialTest() {
     }
 
     setMaterial(material);
-  }, [materialType, cache, matcapTexture, gradientsTexture]);
+  }, [
+    materialType,
+    cache,
+    matcapTexture,
+    gradientsTexture,
+    metalness,
+    roughness,
+    envMap,
+  ]);
 
   useEffect(() => {
-    console.log(sphere);
-  }, [sphere]);
+    (material as THREE.MeshStandardMaterial).metalness = metalness;
+    (material as THREE.MeshStandardMaterial).roughness = roughness;
+    sphere.current &&
+      ((sphere.current.material as THREE.Material).needsUpdate = true);
+    plane.current &&
+      ((plane.current.material as THREE.Material).needsUpdate = true);
+    torus.current &&
+      ((torus.current.material as THREE.Material).needsUpdate = true);
+  }, [material, metalness, roughness, sphere, plane, torus]);
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
@@ -105,7 +149,7 @@ function MaterialTest() {
       {/* 环境光 */}
       <ambientLight intensity={0.5} color={"white"} />
       {/* 点光源 */}
-      <pointLight position={[2, 3, 4]} intensity={20} color={"white"} />
+      <pointLight position={[2, 3, 4]} intensity={2} color={"white"} />
       <mesh ref={sphere} position={[-1.2, 0, 0]} material={material}>
         <sphereGeometry args={[0.5, 16, 16]} />
       </mesh>

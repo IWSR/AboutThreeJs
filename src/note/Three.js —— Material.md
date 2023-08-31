@@ -46,7 +46,7 @@
 
 ## MeshLambertMaterial
 
-> 它基于 Lambert 光照模型，考虑了漫反射光照效果，是在基础光照环境下创建物体的常用材质之一。
+> 它基于 Lambert 光照模型，考虑了漫反射光照效果，是在基础光照环境下创建物体的常用材质之一。如果你需要更高级的光照效果，例如镜面反射和折射，你可能需要考虑使用其他材质类型，如 MeshPhongMaterial 或 MeshStandardMaterial。
 
 - 漫反射光照： MeshLambertMaterial 考虑了漫反射光照效果，即物体表面上的光线均匀地反射到各个方向。这使得物体表面呈现出柔和的外观，不会产生明显的镜面高光。
 
@@ -58,7 +58,7 @@
 
 ## MeshPhongMaterial
 
-> 它基于 Phong 光照模型，提供了更高级的光照效果，包括镜面高光和折射。由于它需要计算镜面反射和折射，可能会比较耗费计算资源。
+> 它基于 Phong 光照模型，提供了更高级的光照效果，包括镜面高光和折射。由于它需要计算镜面反射和折射，可能会比较耗费计算资源。如果你需要更快速的渲染，你可能需要考虑使用其他材质类型，如 MeshLambertMaterial 或 MeshStandardMaterial。
 
 - Phong 光照模型： MeshPhongMaterial 基于 Phong 光照模型，考虑了环境光、漫反射光和镜面光照效果。这使得物体表面可以同时呈现出柔和的漫反射和高亮的镜面高光。
 
@@ -70,10 +70,22 @@
 
 ## MeshToonMaterial
 
-> 它类似于 MeshPhongMaterial，但设计用于模拟卡通风格的渲染效果。
+> 它类似于 MeshPhongMaterial，但设计用于模拟卡通风格的渲染效果。MeshToonMaterial 主要用于实现卡通风格的渲染，适用于一些特定的视觉风格需求。如果你需要更为真实的光照效果，你可能需要考虑使用其他材质类型，如 MeshPhongMaterial 或 MeshStandardMaterial。
 
 - 卡通风格渲染： MeshToonMaterial 通过使用基于 Phong 光照模型的方式，模拟卡通风格的渲染效果。它在漫反射、镜面高光和阴影方面类似于 MeshPhongMaterial，但会强调更为平滑和简化的颜色过渡。
 
 - 色块渐变： 与实际物体上的光照相反，MeshToonMaterial 使用分段的色块来表示不同亮度区域。这使得物体的颜色过渡更加平滑和简化，产生类似于卡通风格的渲染效果。
 
 - 不支持真实光照效果： MeshToonMaterial 旨在模拟卡通风格，因此不支持真实的光照效果，如真实的镜面高光和折射。它适用于需要卡通化外观的场景。
+
+## MeshStandardMaterial
+
+> 它是一种高级的材质，用于渲染 3D 模型的外观。这种材质通常用于实现更真实的光照效果，包括金属感、粗糙度、环境遮挡等。由于 MeshStandardMaterial 考虑了多种光照和表面属性，它通常会在计算上消耗更多资源。它适用于需要更高级光照效果和更真实外观的场景，但在一些情况下可能会导致性能下降。
+
+- PBR（Physically-Based Rendering）光照模型： MeshStandardMaterial 基于物理渲染（PBR）光照模型，考虑了漫反射、镜面反射、金属感、粗糙度和环境遮挡等因素，以实现更真实的外观。
+
+- 金属感和粗糙度： 通过设置金属感（metalness）和粗糙度（roughness）属性，可以调整材质表面的金属感和光滑程度。金属感会影响光线在表面的反射方式，而粗糙度会影响光的散射效果。
+
+- 环境遮挡： MeshStandardMaterial 支持环境遮挡贴图（AO Map），它用于模拟物体表面不受光照直接照射的区域，从而产生更真实的遮挡效果。
+
+- 镜面反射： 与其他材质类型相比，MeshStandardMaterial 的镜面反射效果更加真实。通过设置环境贴图（envMap）可以模拟物体周围的环境反射。
