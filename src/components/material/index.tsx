@@ -12,6 +12,7 @@ type MaterialCachesTypes = {
   MeshMatcapMaterial?: THREE.MeshMatcapMaterial;
   MeshDepthMaterial?: THREE.MeshDepthMaterial;
   MeshLambertMaterial?: THREE.MeshLambertMaterial;
+  MeshPhongMaterial?: THREE.MeshPhongMaterial;
 };
 
 type MaterialType = keyof MaterialCachesTypes;
@@ -71,6 +72,7 @@ function MaterialTest() {
         MeshMatcapMaterial: "MeshMatcapMaterial",
         MeshDepthMaterial: "MeshDepthMaterial",
         MeshLambertMaterial: "MeshLambertMaterial",
+        MeshPhongMaterial: "MeshPhongMaterial",
       },
     },
   });
@@ -83,6 +85,11 @@ function MaterialTest() {
         case "MeshMatcapMaterial":
           (material as THREE.MeshMatcapMaterial).matcap = matcapTexture;
           break;
+        case "MeshPhongMaterial":
+          (material as THREE.MeshPhongMaterial).shininess = 1000; // control reflection
+          (material as THREE.MeshPhongMaterial).specular = new THREE.Color(
+            0xff00ff,
+          ); // control the color of reflection
       }
       (cache.current[
         materialType as MaterialType
@@ -112,7 +119,7 @@ function MaterialTest() {
   return (
     <>
       {/* 环境光 */}
-      <ambientLight intensity={0.5} color={"red"} />
+      <ambientLight intensity={0.5} color={"white"} />
       {/* 点光源 */}
       <pointLight position={[2, 3, 4]} intensity={20} color={"white"} />
       <mesh ref={sphere} position={[-1.2, 0, 0]} material={material}>
