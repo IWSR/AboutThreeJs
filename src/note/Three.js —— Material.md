@@ -1,5 +1,13 @@
 # Three.js —— Material
 
+- color: THREE.Color / 0xff0000 / red / #ff0000 /rgb(255, 0, 0)
+- map: (map)
+- wireframe: (boolean) it will show the triangles that compose the geometry
+- transparent: (boolean)
+- opacity: (number 0~1)
+- alphaMap:(map) control the transparency with a texture
+- side: THREE.FrontSide / THREE.BackSide / THREE.DoubleSide
+
 ## MeshBasicMaterial
 
 > 通常用于创建没有光照影响的材质。它在渲染时不考虑光照效果，直接使用基本的颜色或纹理。
@@ -59,3 +67,13 @@
 - 折射： 除了镜面高光，MeshPhongMaterial 也支持折射效果。这意味着物体可以透过其他物体看到背后的物体，产生透明和折射的效果。
 
 - 颜色和纹理： 类似于其他材质类型，你可以使用 MeshPhongMaterial 的颜色属性来定义物体的基本颜色。你还可以应用纹理贴图来实现更丰富的外观效果。
+
+## MeshToonMaterial
+
+> 它类似于 MeshPhongMaterial，但设计用于模拟卡通风格的渲染效果。
+
+- 卡通风格渲染： MeshToonMaterial 通过使用基于 Phong 光照模型的方式，模拟卡通风格的渲染效果。它在漫反射、镜面高光和阴影方面类似于 MeshPhongMaterial，但会强调更为平滑和简化的颜色过渡。
+
+- 色块渐变： 与实际物体上的光照相反，MeshToonMaterial 使用分段的色块来表示不同亮度区域。这使得物体的颜色过渡更加平滑和简化，产生类似于卡通风格的渲染效果。
+
+- 不支持真实光照效果： MeshToonMaterial 旨在模拟卡通风格，因此不支持真实的光照效果，如真实的镜面高光和折射。它适用于需要卡通化外观的场景。

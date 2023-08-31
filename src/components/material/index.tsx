@@ -13,6 +13,7 @@ type MaterialCachesTypes = {
   MeshDepthMaterial?: THREE.MeshDepthMaterial;
   MeshLambertMaterial?: THREE.MeshLambertMaterial;
   MeshPhongMaterial?: THREE.MeshPhongMaterial;
+  MeshToonMaterial?: THREE.MeshToonMaterial;
 };
 
 type MaterialType = keyof MaterialCachesTypes;
@@ -22,38 +23,13 @@ function MaterialTest() {
 
   const [matcapTexture, gradientsTexture] = useLoader(THREE.TextureLoader, [
     "/textures/matcaps/1.png",
-    "/textures/gradients/3.jpg",
+    "/textures/gradients/5.jpg",
   ]);
 
   console.log(gradientsTexture);
 
   const cache = useRef<MaterialCachesTypes>({
-    /**
-     * color: THREE.Color / 0xff0000 / red / #ff0000 /rgb(255, 0, 0)
-     * map: (map)
-     * wireframe: (boolean) it will show the triangles that compose the geometry
-     * transparent: (boolean)
-     * opacity: (number 0~1)
-     * alphaMap:(map) control the transparency with a texture
-     * side: THREE.FrontSide / THREE.BackSide / THREE.DoubleSide
-     */
     MeshBasicMaterial: new THREE.MeshBasicMaterial(),
-    /**
-     * flatShading: (boolean)
-     */
-    // MeshNormalMaterial: null,
-    /**
-     * matcap: (map)
-     */
-    // MeshMatcapMaterial: null,
-    /**
-     * MeshDepthMaterial will simply color the geometry in white if it's close to thenear and in black if it's close to the far value of the camera
-     */
-    // MeshDepthMaterial: null,
-    /**
-     * MeshLambertMaterial will react to light
-     */
-    // MeshLambertMaterial: null,
   });
 
   const sphere = useRef<THREE.Mesh>(null);
@@ -73,6 +49,7 @@ function MaterialTest() {
         MeshDepthMaterial: "MeshDepthMaterial",
         MeshLambertMaterial: "MeshLambertMaterial",
         MeshPhongMaterial: "MeshPhongMaterial",
+        MeshToonMaterial: "MeshToonMaterial",
       },
     },
   });
@@ -90,6 +67,13 @@ function MaterialTest() {
           (material as THREE.MeshPhongMaterial).specular = new THREE.Color(
             0xff00ff,
           ); // control the color of reflection
+          break;
+        case "MeshToonMaterial":
+          gradientsTexture.minFilter = THREE.NearestFilter;
+          gradientsTexture.magFilter = THREE.NearestFilter;
+          gradientsTexture.generateMipmaps = false; // If generateMipmaps is set to true, Three.js will automatically create mipmaps for the texture. Remember that mipmaps consume memory
+          (material as THREE.MeshToonMaterial).gradientMap = gradientsTexture;
+          break;
       }
       (cache.current[
         materialType as MaterialType
@@ -97,7 +81,7 @@ function MaterialTest() {
     }
 
     setMaterial(material);
-  }, [materialType, cache, matcapTexture]);
+  }, [materialType, cache, matcapTexture, gradientsTexture]);
 
   useEffect(() => {
     console.log(sphere);
