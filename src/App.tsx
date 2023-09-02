@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 // import TextureTest from "./components/texture";
-import MaterialTest from "./components/material";
+// import MaterialTest from "./components/material";
+import LightTest from "./components/lights";
 import "./styles/init.less";
 import "./styles/app.less";
 
@@ -9,7 +10,8 @@ function App() {
     <div id="canvas-container">
       <Canvas>
         {/* <TextureTest /> */}
-        <MaterialTest />
+        {/* <MaterialTest /> */}
+        <LightTest />
       </Canvas>
     </div>
   );
