@@ -1,15 +1,15 @@
-import { extend, useThree, useFrame } from "@react-three/fiber";
-import { useHelper } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
+import { useHelper, OrbitControls } from "@react-three/drei";
 import { useRef, useState } from "react";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 import { useControls } from "leva";
 
-extend({ OrbitControls });
+// extend({ OrbitControls });
 
 function LightTest() {
-  const three = useThree();
+  // const three = useThree();
 
   const sphere = useRef<THREE.Mesh>(null);
   const plane = useRef<THREE.Mesh>(null);
@@ -174,7 +174,8 @@ function LightTest() {
       >
         <planeGeometry args={[5, 5]} />
       </mesh>
-      <orbitControls args={[three.camera, three.gl.domElement]} />
+      {/* <OrbitControls args={[three.camera, three.gl.domElement]} /> */}
+      <OrbitControls />
     </>
   );
 }
