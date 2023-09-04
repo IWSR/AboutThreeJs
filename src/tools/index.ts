@@ -21,7 +21,7 @@ export const useShadowCameraHelper = (
         scene.add(helper.current));
       helper.current.visible = visible;
     } else {
-      helper.current && scene.remove(helper.current);
+      helper.current && (scene.remove(helper.current), (helper.current = null));
     }
   }, [light, visible, scene, helper]);
 };

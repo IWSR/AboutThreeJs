@@ -85,7 +85,7 @@ function ShadowTest() {
     directionalLightY,
     directionalLightZ,
   } = useControls({
-    showDirectionalLight: true,
+    showDirectionalLight: false,
     directionalLightIntensity: {
       value: 1,
       min: 0,
@@ -114,7 +114,7 @@ function ShadowTest() {
 
   const { showPointLight, pointLightX, pointLightY, pointLightZ } = useControls(
     {
-      showPointLight: true,
+      showPointLight: false,
       pointLightX: {
         value: -1,
         min: -5,
@@ -143,7 +143,7 @@ function ShadowTest() {
     spotLightY,
     spotLightZ,
   } = useControls({
-    showSpotLight: true,
+    showSpotLight: false,
     spotLightDistance: {
       value: 10,
       min: 0,

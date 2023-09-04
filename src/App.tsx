@@ -10,7 +10,7 @@ import "./styles/app.less";
 
 function App() {
   const { enabled, shadowMapAlgorithm } = useControls({
-    enabled: false,
+    enabled: true,
     shadowMapAlgorithm: {
       options: {
         BasicShadowMap: THREE.BasicShadowMap,
