@@ -12,7 +12,7 @@ Light 比较耗费性能，能少用就少用
 
 <img width="763" alt="image" src="https://github.com/IWSR/AboutThreeJs/assets/18499412/1ab17f63-c0a6-4cac-86b4-1a0539cecb77">
 
-## directionalLight (环境光) moderate cost
+## directionalLight (环境光) moderate cost （支持 shadow）
 
 > 它模拟了一个远处光源，光线是平行的，类似于太阳光。平行光在 Three.js 场景中通常用于模拟日光或其他来自远处的主要光源。
 >
@@ -30,7 +30,7 @@ Light 比较耗费性能，能少用就少用
 
 <img width="286" alt="image" src="https://github.com/IWSR/AboutThreeJs/assets/18499412/19d2bb60-5dc2-47c4-a0da-5a585ddb7ea4">
 
-## pointLight（点光源）moderate cost
+## pointLight（点光源）moderate cost （支持 shadow）
 
 > 它模拟了一个光源，光线是从一个点向所有方向辐射出去的，类似于灯泡发出的光线。点光源通常用于模拟在场景中特定点处发光的物体，例如灯泡、星星或火焰等。
 
@@ -65,7 +65,7 @@ RectAreaLight 可以用于创建一些有趣的光照效果，尤其是在需要
 
 <img width="445" alt="image" src="https://github.com/IWSR/AboutThreeJs/assets/18499412/bddbd160-ffa6-4049-a719-5ed1e5d23bd2">
 
-## SpotLight high cost
+## SpotLight high cost （支持 shadow）
 
 > 它用于模拟聚光灯效果。聚光灯是一种向特定方向发射光束的灯光，通常用于突出或聚焦在特定区域内的物体。
 
