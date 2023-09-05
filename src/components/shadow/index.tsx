@@ -123,7 +123,6 @@ function ShadowTest() {
   });
 
   useEffect(() => {
-    console.log("dcLight", dcLight.current);
     if (dcLight.current && showDirectionalLight) {
       // 会影响阴影质量
       dcLight.current.shadow.mapSize.width = 1024;
