@@ -24,4 +24,8 @@ export const useShadowCameraHelper = (
       helper.current && (scene.remove(helper.current), (helper.current = null));
     }
   }, [light, visible, scene, helper]);
+
+  useEffect(() => {
+    console.log(light, "lightlight");
+  }, [light]);
 };

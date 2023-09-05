@@ -26,58 +26,6 @@ function ShadowTest() {
   const spotLight = useRef<THREE.SpotLight>(null);
   const pointLight = useRef<THREE.PointLight>(null);
 
-  useEffect(() => {
-    if (dcLight.current) {
-      // 会影响阴影质量
-      dcLight.current.shadow.mapSize.width = 1024;
-      dcLight.current.shadow.mapSize.height = 1024;
-      // 设置near far的目的是？
-      dcLight.current.shadow.camera.near = 1;
-      dcLight.current.shadow.camera.far = 6;
-      // 这里的目的？
-      dcLight.current.shadow.camera.top = 2;
-      dcLight.current.shadow.camera.right = 2;
-      dcLight.current.shadow.camera.bottom = -2;
-      dcLight.current.shadow.camera.left = -2;
-
-      // dcLight.current.shadow.radius = 10;
-    }
-  }, [dcLight]);
-
-  useEffect(() => {
-    if (spotLight.current) {
-      // 会影响阴影质量
-      spotLight.current.shadow.mapSize.width = 1024;
-      spotLight.current.shadow.mapSize.height = 1024;
-      // 设置near far的目的是？
-      spotLight.current.shadow.camera.near = 1;
-      spotLight.current.shadow.camera.far = 6;
-
-      spotLight.current.shadow.camera.fov = 30;
-
-      // dcLight.current.shadow.radius = 10;
-    }
-  }, [spotLight]);
-
-  useEffect(() => {
-    if (pointLight.current) {
-      // 会影响阴影质量
-      pointLight.current.shadow.mapSize.width = 1024;
-      pointLight.current.shadow.mapSize.height = 1024;
-      // 设置near far的目的是？
-      pointLight.current.shadow.camera.near = 1;
-      pointLight.current.shadow.camera.far = 6;
-
-      // pointLight.current.shadow.camera.fov = 30;
-
-      // dcLight.current.shadow.radius = 10;
-    }
-  }, [pointLight]);
-
-  const { isBaked } = useControls({
-    isBaked: false,
-  });
-
   const {
     showDirectionalLight,
     directionalLightIntensity,
@@ -111,30 +59,6 @@ function ShadowTest() {
       step: 0.001,
     },
   });
-
-  const { showPointLight, pointLightX, pointLightY, pointLightZ } = useControls(
-    {
-      showPointLight: false,
-      pointLightX: {
-        value: -1,
-        min: -5,
-        max: 5,
-        step: 0.001,
-      },
-      pointLightY: {
-        value: 1,
-        min: -5,
-        max: 5,
-        step: 0.001,
-      },
-      pointLightZ: {
-        value: 0,
-        min: -5,
-        max: 5,
-        step: 0.001,
-      },
-    },
-  );
 
   const {
     showSpotLight,
@@ -170,6 +94,83 @@ function ShadowTest() {
     },
   });
 
+  const { showPointLight, pointLightX, pointLightY, pointLightZ } = useControls(
+    {
+      showPointLight: false,
+      pointLightX: {
+        value: -1,
+        min: -5,
+        max: 5,
+        step: 0.001,
+      },
+      pointLightY: {
+        value: 1,
+        min: -5,
+        max: 5,
+        step: 0.001,
+      },
+      pointLightZ: {
+        value: 0,
+        min: -5,
+        max: 5,
+        step: 0.001,
+      },
+    },
+  );
+
+  const { isBaked } = useControls({
+    isBaked: false,
+  });
+
+  useEffect(() => {
+    console.log("dcLight", dcLight.current);
+    if (dcLight.current && showDirectionalLight) {
+      // 会影响阴影质量
+      dcLight.current.shadow.mapSize.width = 1024;
+      dcLight.current.shadow.mapSize.height = 1024;
+      // 透视相机
+      dcLight.current.shadow.camera.near = 1;
+      dcLight.current.shadow.camera.far = 6;
+      // 透视相机
+      dcLight.current.shadow.camera.top = 2;
+      dcLight.current.shadow.camera.right = 2;
+      dcLight.current.shadow.camera.bottom = -2;
+      dcLight.current.shadow.camera.left = -2;
+
+      // dcLight.current.shadow.radius = 10;
+    }
+  }, [showDirectionalLight]);
+
+  useEffect(() => {
+    if (spotLight.current && showSpotLight) {
+      // 会影响阴影质量
+      spotLight.current.shadow.mapSize.width = 1024;
+      spotLight.current.shadow.mapSize.height = 1024;
+      // 设置near far的目的是？
+      spotLight.current.shadow.camera.near = 1;
+      spotLight.current.shadow.camera.far = 6;
+
+      spotLight.current.shadow.camera.fov = 30;
+
+      // dcLight.current.shadow.radius = 10;
+    }
+  }, [showSpotLight]);
+
+  useEffect(() => {
+    if (pointLight.current && showPointLight) {
+      // 会影响阴影质量
+      pointLight.current.shadow.mapSize.width = 1024;
+      pointLight.current.shadow.mapSize.height = 1024;
+      // 设置near far的目的是？
+      pointLight.current.shadow.camera.near = 1;
+      pointLight.current.shadow.camera.far = 6;
+
+      // pointLight.current.shadow.camera.fov = 30;
+
+      // dcLight.current.shadow.radius = 10;
+    }
+  }, [showPointLight]);
+
   useShadowCameraHelper(dcLight, showDirectionalLight);
 
   useShadowCameraHelper(spotLight, showSpotLight);
@@ -191,7 +192,7 @@ function ShadowTest() {
         <planeGeometry args={[5, 5]} />
       </mesh>
 
-      <ambientLight intensity={0.5} color={0xffffff} />
+      <ambientLight intensity={1} color={0xffffff} />
 
       {showDirectionalLight && (
         <directionalLight
