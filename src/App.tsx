@@ -4,7 +4,8 @@ import { useControls } from "leva";
 // import TextureTest from "./components/texture";
 // import MaterialTest from "./components/material";
 // import LightTest from "./components/lights";
-import ShadowTest from "./components/shadow";
+// import ShadowTest from "./components/shadow";
+import ParticleTest from "./components/particle";
 import "./styles/init.less";
 import "./styles/app.less";
 
@@ -31,7 +32,8 @@ function App() {
         {/* <TextureTest /> */}
         {/* <MaterialTest /> */}
         {/* <LightTest /> */}
-        <ShadowTest />
+        {/* <ShadowTest /> */}
+        <ParticleTest />
       </Canvas>
     </div>
   );
