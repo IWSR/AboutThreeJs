@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
+import { useFrame, useLoader } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-// import CANNON from 'cannon-es';
+import * as CANNON from "cannon-es";
 
 export default function PhysicsTest() {
   const [environmentMapTexture] = useLoader(THREE.CubeTextureLoader, [
@@ -15,6 +15,8 @@ export default function PhysicsTest() {
       "/textures/environmentMaps/0/nz.jpg",
     ],
   ]);
+
+  const sphere = useRef<THREE.Mesh | null>(null);
 
   const sphereMaterial = useRef<THREE.Material>(
     new THREE.MeshStandardMaterial({
@@ -35,22 +37,82 @@ export default function PhysicsTest() {
     }),
   );
 
-  const directionalLightRef = useRef<THREE.DirectionalLight | null>(null);
+  const directionalLight = useRef<THREE.DirectionalLight | null>(null);
+
+  const world = useRef<CANNON.World>(
+    new CANNON.World({
+      gravity: new CANNON.Vec3(0, -9.82, 0),
+    }),
+  );
+
+  const sphereBody = useRef<CANNON.Body>(
+    new CANNON.Body({
+      mass: 1,
+      shape: new CANNON.Sphere(0.5),
+      position: new CANNON.Vec3(0, 3, 0),
+    }),
+  );
+
+  const floorBody = useRef<CANNON.Body>(
+    new CANNON.Body({
+      mass: 0,
+      shape: new CANNON.Plane(),
+      // position: new CANNON.Vec3(0, 3, 0),
+    }),
+  );
+
+  const oldElapsedTime = useRef(0);
 
   useEffect(() => {
-    if (directionalLightRef.current) {
-      directionalLightRef.current.shadow.mapSize.set(1024, 1024);
-      directionalLightRef.current.shadow.camera.far = 15;
-      directionalLightRef.current.shadow.camera.left = -7;
-      directionalLightRef.current.shadow.camera.top = 7;
-      directionalLightRef.current.shadow.camera.right = 7;
-      directionalLightRef.current.shadow.camera.bottom = -7;
+    floorBody.current.quaternion.setFromAxisAngle(
+      new CANNON.Vec3(-1, 0, 0),
+      Math.PI * 0.5,
+    );
+  }, []);
+
+  useEffect(() => {
+    if (directionalLight.current) {
+      directionalLight.current.shadow.mapSize.set(1024, 1024);
+      directionalLight.current.shadow.camera.far = 15;
+      directionalLight.current.shadow.camera.left = -7;
+      directionalLight.current.shadow.camera.top = 7;
+      directionalLight.current.shadow.camera.right = 7;
+      directionalLight.current.shadow.camera.bottom = -7;
     }
-  }, [directionalLightRef]);
+  }, [directionalLight]);
+
+  useEffect(() => {
+    world.current.addBody(sphereBody.current);
+    world.current.addBody(floorBody.current);
+  }, [world, sphereBody, floorBody]);
+
+  useFrame(({ clock }) => {
+    const time = clock.getElapsedTime();
+    const deltaTime = time - oldElapsedTime.current;
+    oldElapsedTime.current = time;
+    // dt: number, timeSinceLastCalled?: number, maxSubSteps?: number
+    world.current.step(1 / 60, deltaTime, 3);
+    if (sphere.current) {
+      sphere.current.position.copy(sphereBody.current.position);
+    }
+  });
+
+  const clickHandle = useCallback(() => {
+    if (sphere.current) {
+      sphere.current.position.y = 3;
+      sphereBody.current.position.y = 3;
+    }
+  }, [sphere, sphereBody]);
 
   return (
     <>
-      <mesh material={sphereMaterial.current} position={[0, 0.5, 0]} castShadow>
+      <mesh
+        ref={sphere}
+        material={sphereMaterial.current}
+        position={[0, 3, 0]}
+        castShadow
+        onClick={clickHandle}
+      >
         <sphereGeometry args={[0.5, 32, 32]} />
       </mesh>
 
@@ -62,10 +124,10 @@ export default function PhysicsTest() {
         <planeGeometry args={[10, 10]} />
       </mesh>
 
-      <ambientLight color={"0xffffff"} intensity={0.7} />
+      <ambientLight color={"white"} intensity={0.7} />
 
       <directionalLight
-        color={"0xffffff"}
+        color={"white"}
         intensity={0.2}
         position={[5, 5, 5]}
         castShadow
