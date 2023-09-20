@@ -39,6 +39,21 @@ export default function PhysicsTest() {
 
   const directionalLight = useRef<THREE.DirectionalLight | null>(null);
 
+  const materials = useRef<{ [key: string]: CANNON.Material }>({
+    default: new CANNON.Material("default"),
+  });
+
+  const contactMaterial = useRef<{ [key: string]: CANNON.ContactMaterial }>({
+    default: new CANNON.ContactMaterial(
+      materials.current.default,
+      materials.current.default,
+      {
+        friction: 0.1, // 摩擦力
+        restitution: 0.7, // 用于描述碰撞之后物体反弹的弹性程度。它决定了碰撞后物体在碰撞表面上的反弹程度或者反弹速度。
+      },
+    ),
+  });
+
   const world = useRef<CANNON.World>(
     new CANNON.World({
       gravity: new CANNON.Vec3(0, -9.82, 0),
@@ -50,6 +65,7 @@ export default function PhysicsTest() {
       mass: 1,
       shape: new CANNON.Sphere(0.5),
       position: new CANNON.Vec3(0, 3, 0),
+      material: materials.current.default,
     }),
   );
 
@@ -58,12 +74,14 @@ export default function PhysicsTest() {
       mass: 0,
       shape: new CANNON.Plane(),
       // position: new CANNON.Vec3(0, 3, 0),
+      material: materials.current.default,
     }),
   );
 
   const oldElapsedTime = useRef(0);
 
   useEffect(() => {
+    // 四元数旋转 world 内平面
     floorBody.current.quaternion.setFromAxisAngle(
       new CANNON.Vec3(-1, 0, 0),
       Math.PI * 0.5,
@@ -84,6 +102,7 @@ export default function PhysicsTest() {
   useEffect(() => {
     world.current.addBody(sphereBody.current);
     world.current.addBody(floorBody.current);
+    world.current.addContactMaterial(contactMaterial.current.default);
   }, [world, sphereBody, floorBody]);
 
   useFrame(({ clock }) => {
