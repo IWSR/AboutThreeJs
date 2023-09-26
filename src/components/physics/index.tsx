@@ -1,38 +1,42 @@
 import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as CANNON from "cannon-es";
 
 export default function PhysicsTest() {
-  const [environmentMapTexture] = useLoader(THREE.CubeTextureLoader, [
-    [
-      "/textures/environmentMaps/0/px.jpg",
-      "/textures/environmentMaps/0/nx.jpg",
-      "/textures/environmentMaps/0/py.jpg",
-      "/textures/environmentMaps/0/ny.jpg",
-      "/textures/environmentMaps/0/pz.jpg",
-      "/textures/environmentMaps/0/nz.jpg",
-    ],
-  ]);
+  const { scene } = useThree();
 
-  const sphere = useRef<THREE.Mesh | null>(null);
-
-  const sphereMaterial = useRef<THREE.Material>(
-    new THREE.MeshStandardMaterial({
-      metalness: 0.3,
-      roughness: 0.4,
-      envMap: environmentMapTexture,
-      envMapIntensity: 0.5,
-    }),
+  const textures = useRef(
+    useLoader(THREE.CubeTextureLoader, [
+      [
+        "/textures/environmentMaps/0/px.jpg",
+        "/textures/environmentMaps/0/nx.jpg",
+        "/textures/environmentMaps/0/py.jpg",
+        "/textures/environmentMaps/0/ny.jpg",
+        "/textures/environmentMaps/0/pz.jpg",
+        "/textures/environmentMaps/0/nz.jpg",
+      ],
+    ]),
   );
+
+  // const sphere = useRef<THREE.Mesh | null>(null);
+
+  // const sphereMaterial = useRef<THREE.Material>(
+  //   new THREE.MeshStandardMaterial({
+  //     metalness: 0.3,
+  //     roughness: 0.4,
+  //     envMap: textures.current[0],
+  //     envMapIntensity: 0.5,
+  //   }),
+  // );
 
   const planeMaterial = useRef<THREE.Material>(
     new THREE.MeshStandardMaterial({
       color: "#777777",
       metalness: 0.3,
       roughness: 0.4,
-      envMap: environmentMapTexture,
+      envMap: textures.current[0],
       envMapIntensity: 0.5,
     }),
   );
@@ -80,6 +84,13 @@ export default function PhysicsTest() {
 
   const oldElapsedTime = useRef(0);
 
+  const objectsToUpdate = useRef<
+    {
+      body: CANNON.Body;
+      mesh: THREE.Mesh;
+    }[]
+  >([]);
+
   useEffect(() => {
     // 四元数旋转 world 内平面
     floorBody.current.quaternion.setFromAxisAngle(
@@ -100,6 +111,8 @@ export default function PhysicsTest() {
   }, [directionalLight]);
 
   useEffect(() => {
+    // sphereBody.current.applyLocalForce(new CANNON.Vec3(150, 0, 0), new CANNON.Vec3(0, 0, 0));
+
     world.current.addBody(sphereBody.current);
     world.current.addBody(floorBody.current);
     world.current.addContactMaterial(contactMaterial.current.default);
@@ -111,21 +124,74 @@ export default function PhysicsTest() {
     oldElapsedTime.current = time;
     // dt: number, timeSinceLastCalled?: number, maxSubSteps?: number
     world.current.step(1 / 60, deltaTime, 3);
-    if (sphere.current) {
-      sphere.current.position.copy(sphereBody.current.position);
+    if (objectsToUpdate.current.length) {
+      // sphere.current.position.copy(sphereBody.current.position);
+
+      for (const object of objectsToUpdate.current) {
+        object.mesh.position.copy(object.body.position);
+      }
     }
+    // sphereBody.current.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.current?.position);
   });
 
-  const clickHandle = useCallback(() => {
-    if (sphere.current) {
-      sphere.current.position.y = 3;
-      sphereBody.current.position.y = 3;
-    }
-  }, [sphere, sphereBody]);
+  // const clickHandle = useCallback(() => {
+  //   if (sphere.current) {
+  //     sphere.current.position.y = 3;
+  //     sphereBody.current.position.y = 3;
+  //   }
+  // }, [sphere, sphereBody]);
+
+  const createSphere = useCallback(
+    (
+      radius: number,
+      position:
+        | CANNON.Vec3
+        | THREE.Vector3
+        | {
+            x: number;
+            y: number;
+            z: number;
+          },
+    ) => {
+      const [environmentMapTexture] = textures.current;
+      const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 20, 20),
+        new THREE.MeshStandardMaterial({
+          metalness: 0.3,
+          roughness: 0.4,
+          envMap: environmentMapTexture,
+        }),
+      );
+
+      mesh.castShadow = true;
+      mesh.position.copy(position as THREE.Vector3);
+      scene.add(mesh);
+
+      const shape = new CANNON.Sphere(radius);
+      const body = new CANNON.Body({
+        mass: 1,
+        position: new CANNON.Vec3(0, 3, 0),
+        shape,
+        material: materials.current.default,
+      });
+      body.position.copy(position as CANNON.Vec3);
+      world.current.addBody(body);
+
+      objectsToUpdate.current.push({
+        mesh,
+        body,
+      });
+    },
+    [scene],
+  );
+
+  useEffect(() => {
+    createSphere(0.5, { x: 0, y: 3, z: 0 });
+  }, [createSphere]);
 
   return (
     <>
-      <mesh
+      {/* <mesh
         ref={sphere}
         material={sphereMaterial.current}
         position={[0, 3, 0]}
@@ -133,7 +199,7 @@ export default function PhysicsTest() {
         onClick={clickHandle}
       >
         <sphereGeometry args={[0.5, 32, 32]} />
-      </mesh>
+      </mesh> */}
 
       <mesh
         material={planeMaterial.current}
