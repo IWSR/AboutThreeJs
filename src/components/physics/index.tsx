@@ -3,6 +3,16 @@ import * as THREE from "three";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as CANNON from "cannon-es";
+import { useControls, button } from "leva";
+
+type PositionType =
+  | CANNON.Vec3
+  | THREE.Vector3
+  | {
+      x: number;
+      y: number;
+      z: number;
+    };
 
 export default function PhysicsTest() {
   const { scene } = useThree();
@@ -19,17 +29,6 @@ export default function PhysicsTest() {
       ],
     ]),
   );
-
-  // const sphere = useRef<THREE.Mesh | null>(null);
-
-  // const sphereMaterial = useRef<THREE.Material>(
-  //   new THREE.MeshStandardMaterial({
-  //     metalness: 0.3,
-  //     roughness: 0.4,
-  //     envMap: textures.current[0],
-  //     envMapIntensity: 0.5,
-  //   }),
-  // );
 
   const planeMaterial = useRef<THREE.Material>(
     new THREE.MeshStandardMaterial({
@@ -134,25 +133,8 @@ export default function PhysicsTest() {
     // sphereBody.current.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.current?.position);
   });
 
-  // const clickHandle = useCallback(() => {
-  //   if (sphere.current) {
-  //     sphere.current.position.y = 3;
-  //     sphereBody.current.position.y = 3;
-  //   }
-  // }, [sphere, sphereBody]);
-
   const createSphere = useCallback(
-    (
-      radius: number,
-      position:
-        | CANNON.Vec3
-        | THREE.Vector3
-        | {
-            x: number;
-            y: number;
-            z: number;
-          },
-    ) => {
+    (radius: number, position: PositionType) => {
       const [environmentMapTexture] = textures.current;
       const mesh = new THREE.Mesh(
         new THREE.SphereGeometry(radius, 20, 20),
@@ -185,22 +167,54 @@ export default function PhysicsTest() {
     [scene],
   );
 
-  useEffect(() => {
-    createSphere(0.5, { x: 0, y: 3, z: 0 });
-  }, [createSphere]);
+  const createBox = useCallback(
+    (width: number, height: number, depth: number, position: PositionType) => {
+      const [environmentMapTexture] = textures.current;
+      const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(1, 1, 1),
+        new THREE.MeshStandardMaterial({
+          metalness: 0.3,
+          roughness: 0.4,
+          envMap: environmentMapTexture,
+          envMapIntensity: 0.5,
+        }),
+      );
+      mesh.scale.set(width, height, depth);
+      mesh.castShadow = true;
+      mesh.position.copy(position);
+      scene.add(mesh);
+
+      const shape = new CANNON.Box(
+        new CANNON.Vec3(width * 0.5, height * 0.5, depth * 0.5),
+      );
+      const body = new CANNON.Body({
+        mass: 1,
+        position: new CANNON.Vec3(0, 3, 0),
+        shape: shape,
+        material: materials.current.default,
+      });
+
+      body.position.copy(position as CANNON.Vec3);
+      world.current.addBody(body);
+
+      objectsToUpdate.current.push({
+        mesh,
+        body,
+      });
+    },
+    [scene],
+  );
+
+  useControls(
+    {
+      createSphere: button(() => createSphere(0.5, { x: 0, y: 3, z: 0 })),
+      createBox: button(() => createBox(1, 1, 1, { x: 0, y: 3, z: 0 })),
+    },
+    [createSphere],
+  );
 
   return (
     <>
-      {/* <mesh
-        ref={sphere}
-        material={sphereMaterial.current}
-        position={[0, 3, 0]}
-        castShadow
-        onClick={clickHandle}
-      >
-        <sphereGeometry args={[0.5, 32, 32]} />
-      </mesh> */}
-
       <mesh
         material={planeMaterial.current}
         rotation={[-Math.PI * 0.5, 0, 0]}
