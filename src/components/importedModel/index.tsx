@@ -8,7 +8,7 @@ import { useShadowCameraHelper } from "@/tools";
 function Model() {
   const result = useLoader(
     MMDLoader,
-    "/models/YYB/YYB.pmx",
+    "/models/babala/芭芭拉/芭芭拉.pmx",
     () => {
       // 自定义加载 需要再再找些例子
     },
