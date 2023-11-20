@@ -12,7 +12,7 @@ Light 比较耗费性能，能少用就少用
 
 <img width="763" alt="image" src="https://github.com/IWSR/AboutThreeJs/assets/18499412/1ab17f63-c0a6-4cac-86b4-1a0539cecb77">
 
-## directionalLight (环境光) moderate cost （支持 shadow）
+## directionalLight (平行光) moderate cost （支持 shadow）
 
 > 它模拟了一个远处光源，光线是平行的，类似于太阳光。平行光在 Three.js 场景中通常用于模拟日光或其他来自远处的主要光源。
 >

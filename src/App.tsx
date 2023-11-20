@@ -31,6 +31,11 @@ function App() {
           enabled, // 没生效。。
           type: shadowMapAlgorithm,
         }}
+        onCreated={({ gl, scene }) => {
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.outputColorSpace = THREE.SRGBColorSpace;
+          scene.background = new THREE.Color("#373740");
+        }}
       >
         {/* <TextureTest /> */}
         {/* <MaterialTest /> */}

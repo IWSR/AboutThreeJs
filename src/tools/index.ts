@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { useEffect, useRef } from "react";
 import { useThree } from "@react-three/fiber";
+// import { MMDAnimationHelper } from 'three/addons/animation/MMDAnimationHelper.js';
 
 export const useShadowCameraHelper = (
   light: React.RefObject<THREE.Light> | null,
@@ -25,3 +26,7 @@ export const useShadowCameraHelper = (
     }
   }, [light, visible, scene, helper]);
 };
+
+// export const useMMDAnimationHelper = () => {
+//   const helper = useRef<MMDAnimationHelper | null>(null);
+// };

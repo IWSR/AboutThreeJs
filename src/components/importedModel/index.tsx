@@ -1,26 +1,33 @@
 import { useRef } from "react";
 import { useLoader } from "@react-three/fiber";
 import { MMDLoader } from "three/addons/loaders/MMDLoader.js";
+import { MMDAnimationHelper } from "three/addons/animation/MMDAnimationHelper.js";
 import { OrbitControls } from "@react-three/drei";
 import { useControls } from "leva";
 import { useShadowCameraHelper } from "@/tools";
 
 function Model() {
+  const helper = new MMDAnimationHelper();
   const result = useLoader(
     MMDLoader,
     "/models/babala/芭芭拉/芭芭拉.pmx",
-    () => {
+    // "/models/YYB/YYB.pmx",
+    (loader) => {
       // 自定义加载 需要再再找些例子
+      console.log(loader, "wawa");
     },
     (xhr) => {
       // You can get the loading status from a callback you provide as the fourth argument.
       console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
     },
   );
+  helper.add(result, {
+    physics: false,
+  });
   console.log(result, "result");
 
   return (
-    <primitive object={result} position={[0, 0, 0]} scale={[0.1, 0.1, 0.1]} />
+    <primitive object={result} position={[0, 0, 0]} scale={[0.11, 0.1, 0.1]} />
   );
 }
 
@@ -41,24 +48,24 @@ function ImportedModels() {
       value: 1,
       min: 0,
       max: 1,
-      step: 0.1,
+      step: 0.01,
     },
     directionalLightX: {
       value: 1.23,
-      min: -5,
-      max: 5,
+      min: -100,
+      max: 100,
       step: 0.001,
     },
     directionalLightY: {
       value: 0.66,
-      min: -5,
-      max: 5,
+      min: -100,
+      max: 100,
       step: 0.001,
     },
     directionalLightZ: {
       value: 0,
-      min: -5,
-      max: 5,
+      min: -1000,
+      max: 1000,
       step: 0.001,
     },
   });
@@ -123,10 +130,10 @@ function ImportedModels() {
 
   const { ambientLightIntensity } = useControls({
     ambientLightIntensity: {
-      value: 1,
+      value: 3,
       min: 0,
       max: 10,
-      step: 0.1,
+      step: 0.01,
     },
   });
 
@@ -138,7 +145,8 @@ function ImportedModels() {
 
   return (
     <>
-      <ambientLight intensity={ambientLightIntensity} color={0xffffff} />
+      <ambientLight intensity={ambientLightIntensity} color={"fff"} />
+
       <Model />
 
       {showDirectionalLight && (
