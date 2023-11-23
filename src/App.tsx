@@ -8,7 +8,8 @@ import { useControls } from "leva";
 // import ParticleTest from "./components/particle";
 // import RaycasterTest from "./components/raycaster";
 // import PhysicsTest from "./components/physics";
-import ImportedModels from "./components/importedModel";
+// import ImportedModels from "./components/importedModel";
+import Shaders from "./components/shaderTest";
 import "./styles/init.less";
 import "./styles/app.less";
 
@@ -44,7 +45,8 @@ function App() {
         {/* <ParticleTest /> */}
         {/* <RaycasterTest /> */}
         {/* <PhysicsTest /> */}
-        <ImportedModels />
+        {/* <ImportedModels /> */}
+        <Shaders />
       </Canvas>
     </div>
   );

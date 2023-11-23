@@ -5,3 +5,8 @@ declare module "@react-three/fiber" {
     orbitControls: Object3DNode<OrbitControls, typeof OrbitControls>;
   }
 }
+
+declare module "*.glsl" {
+  const value: string;
+  export default value;
+}
