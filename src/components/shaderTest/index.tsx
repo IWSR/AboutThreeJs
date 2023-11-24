@@ -41,7 +41,7 @@ function Shaders() {
           side={THREE.DoubleSide}
           uniforms={{
             uFrequency: { value: new THREE.Vector2(10, 5) },
-            uTime: { value: 0 },
+            uTime: { value: 0.0 },
             uColor: { value: new THREE.Color("red") },
             uTexture: { value: testTexture },
           }}

@@ -1,4 +1,4 @@
-uniform float uFrequency;
+uniform vec2 uFrequency;
 uniform float uTime;
 
 attribute float aRandom; // 这个属性是我们在前面自己设置的

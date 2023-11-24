@@ -51,6 +51,11 @@ Fragment shader 在图形管线中的位置如下：
 int/ float/ boolean/ Vector2/ Vector3/ Vector4 / mat2, mat3, mat4(矩阵), sampler2D
 
 ```glsl
+// 设置全局的浮点数精度
+#ifdef GL_ES
+precision mediump float;
+#endif
+
 bool foo = true;
 
 // 1
@@ -98,7 +103,7 @@ Many built-in classic functions **sin**, **cos** , **max**, **min** , **pow**, *
 
 but also very practical functions like **cross**, **dot**, **mix**, **step**, **smoothstep**, **length**, **distance**, **reflect**, **refract**, **normalize**
 
-## glsl 的已有变量
+## glsl 的内建变量
 
 - gl_Position
   - Will contain the position of the vertex on the screen
@@ -106,6 +111,9 @@ but also very practical functions like **cross**, **dot**, **mix**, **step**, **
 - gl_FragColor
   - Will contain the color of the fragment
   - vec4(r, g, b and a)
+- gl_FragCoord
+  - varying 变化值
+  - gl_FragCoord存储了活动线程正在处理的像素或屏幕碎片的坐标。
 
 ## Percision(精度)
 
