@@ -22,9 +22,8 @@ void main() {
   modelPosition.z += elevation;
 
   vec4 viewPosition = viewMatrix * modelPosition;
-  vec4 projectionMatrix = projectionMatrix * viewPosition;
 
-  gl_Position = projectionMatrix;
+  gl_Position = projectionMatrix * viewPosition;
 
   vRandom = aRandom;
   vUv = uv;

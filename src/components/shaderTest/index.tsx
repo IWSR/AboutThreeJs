@@ -3,16 +3,17 @@ import * as THREE from "three";
 import vertexShader from "./shaders/vertex.glsl?raw";
 import fragmentShader from "./shaders/fragment.glsl?raw";
 import { useEffect, useRef } from "react";
-import { useLoader } from "@react-three/fiber";
+import { useLoader, useFrame } from "@react-three/fiber";
 
 function Shaders() {
   const planeRef = useRef<THREE.Mesh | null>(null);
+  const shadowMaterialRef = useRef<THREE.ShaderMaterial | null>(null);
 
   // const [count, setCount] = useState(0);
   // const [randoms, setRandoms] = useState<Float32Array | null>(null);
 
   const [testTexture] = useLoader(THREE.TextureLoader, [
-    "/textures/test/flag-french.jpg",
+    "/textures/test/jVNBxYI.jpg",
   ]);
 
   useEffect(() => {
@@ -31,11 +32,20 @@ function Shaders() {
     }
   }, [planeRef]);
 
+  useFrame(({ clock }) => {
+    const time = clock.getElapsedTime();
+
+    if (shadowMaterialRef.current) {
+      shadowMaterialRef.current.uniforms.uTime.value = time;
+    }
+  });
+
   return (
     <>
       <mesh ref={planeRef}>
         <planeGeometry args={[1, 1, 32, 32]} />
         <shaderMaterial
+          ref={shadowMaterialRef}
           fragmentShader={fragmentShader}
           vertexShader={vertexShader}
           side={THREE.DoubleSide}
