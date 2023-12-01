@@ -1,20 +1,17 @@
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import vertexShader from "./shaders/vertex.glsl?raw";
-import fragmentShader from "./shaders/fragment.glsl?raw";
+import vertexShader from "./shaders/test2/vertex.glsl?raw";
+import fragmentShader from "./shaders/test2/fragment.glsl?raw";
 import { useEffect, useRef } from "react";
-import { useLoader, useFrame } from "@react-three/fiber";
+// import { useLoader, useFrame } from "@react-three/fiber";
 
 function Shaders() {
   const planeRef = useRef<THREE.Mesh | null>(null);
   const shadowMaterialRef = useRef<THREE.ShaderMaterial | null>(null);
 
-  // const [count, setCount] = useState(0);
-  // const [randoms, setRandoms] = useState<Float32Array | null>(null);
-
-  const [testTexture] = useLoader(THREE.TextureLoader, [
-    "/textures/test/jVNBxYI.jpg",
-  ]);
+  // const [testTexture] = useLoader(THREE.TextureLoader, [
+  //   "/textures/test/jVNBxYI.jpg",
+  // ]);
 
   useEffect(() => {
     if (planeRef.current) {
@@ -32,19 +29,19 @@ function Shaders() {
     }
   }, [planeRef]);
 
-  useFrame(({ clock }) => {
-    const time = clock.getElapsedTime();
+  // useFrame(({ clock }) => {
+  //   const time = clock.getElapsedTime();
 
-    if (shadowMaterialRef.current) {
-      shadowMaterialRef.current.uniforms.uTime.value = time;
-    }
-  });
+  //   if (shadowMaterialRef.current) {
+  //     shadowMaterialRef.current.uniforms.uTime.value = time;
+  //   }
+  // });
 
   return (
     <>
       <mesh ref={planeRef}>
         <planeGeometry args={[1, 1, 32, 32]} />
-        <shaderMaterial
+        {/* <shaderMaterial
           ref={shadowMaterialRef}
           fragmentShader={fragmentShader}
           vertexShader={vertexShader}
@@ -55,6 +52,20 @@ function Shaders() {
             uColor: { value: new THREE.Color("red") },
             uTexture: { value: testTexture },
           }}
+          // wireframe
+          transparent
+        /> */}
+        <shaderMaterial
+          ref={shadowMaterialRef}
+          fragmentShader={fragmentShader}
+          vertexShader={vertexShader}
+          side={THREE.DoubleSide}
+          // uniforms={{
+          //   uFrequency: { value: new THREE.Vector2(10, 5) },
+          //   uTime: { value: 0.0 },
+          //   uColor: { value: new THREE.Color("red") },
+          //   uTexture: { value: testTexture },
+          // }}
           // wireframe
           transparent
         />
