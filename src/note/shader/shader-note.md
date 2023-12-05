@@ -11,6 +11,19 @@
 
 ## 设定方式
 
+## gl\_
+
+### gl_FragCoord
+
+gl_FragCoord 是在片段着色器（Fragment Shader）中的一个内建变量，它表示当前片段（像素）在屏幕空间中的坐标。具体来说，它是一个包含四个分量的浮点向量：
+
+gl_FragCoord.x 表示片段的 x 坐标。
+gl_FragCoord.y 表示片段的 y 坐标。
+gl_FragCoord.z 表示片段的深度值（在透视投影中有意义）。
+gl_FragCoord.w 表示片段的透视除法的分母值。
+
+这个变量的坐标系统是以屏幕左下角为原点，x 轴向右，y 轴向上。在片段着色器中，你可以使用 gl_FragCoord 来获取当前像素的屏幕坐标，从而执行一些与屏幕位置相关的计算，比如纹理坐标的计算、光照等。
+
 ## 颜色转换（RGB、HSB）
 
 将 RGB 0-255 转换（直接除255）至 0-1 间，可便于 GPU 进行浮点计算
@@ -75,18 +88,35 @@ vec3 hsv2rgb(vec3 c) {
 
 ![Alt text](./image/sign2.png)
 
-### ceil()
+### ceil/floor()
 
-> 向上取整
+> 向上/下取整
 
 ```glsl
-  float ceil(float x);
+  float ceil/floor(float x);
 
-  vec2 ceil(vec2 x);
+  vec2 ceil/floor(vec2 x);
 
-  vec3 ceil(vec3 x);
+  vec3 ceil/floor(vec3 x);
 
-  vec4 ceil(vec4 x);
+  vec4 ceil/floor(vec4 x);
 ```
 
 ![Alt text](./image/ceil.png)
+
+### smoothstep
+
+> 平滑阶跃函数
+
+![Alt text](./image/smoothstep.png)
+
+如果 edge0 > edge 1，则从 1-0 的阶跃
+如果 edge0 < edge 1，则从 0-1 的阶跃
+
+#### 函数定义
+
+![Alt text](./image/smoothstep2.png)
+
+#### 函数图像
+
+![Alt text](./image/smoothstep1.png)
