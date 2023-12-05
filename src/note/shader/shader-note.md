@@ -120,3 +120,30 @@ vec3 hsv2rgb(vec3 c) {
 #### 函数图像
 
 ![Alt text](./image/smoothstep1.png)
+
+### step
+
+![Alt text](./image/step.png)
+
+```glsl
+step(1.0, x) // x < 1 return 0; x > 1 return 1
+```
+
+### mod——求余
+
+#### 语法
+
+```glsl
+  float mod(float x, float y);
+  vec2 mod(vec2 x, vec2 y);
+  vec3 mod(vec3 x, vec3 y);
+  vec4 mod(vec4 x, vec4 y);
+
+  vec2 mod(vec2 x, float y);
+  vec3 mod(vec3 x, float y);
+  vec4 mod(vec4 x, float y);
+```
+
+#### 函数图像
+
+![Alt text](./image/mod1.png)
