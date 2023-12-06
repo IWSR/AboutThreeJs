@@ -147,3 +147,17 @@ step(1.0, x) // x < 1 return 0; x > 1 return 1
 #### 函数图像
 
 ![Alt text](./image/mod1.png)
+
+### mix
+
+```
+T mix(T x, T y, float a);
+```
+
+这里，T 是要进行插值的值的类型，可以是 float、vec2、vec3、vec4 等。参数 x 和 y 是要进行插值的两个值，而参数 a 是插值的权重，通常在 0.0 到 1.0 之间。
+
+函数的计算方式为：
+
+```
+result = x * (1.0 - a) + y * a;
+```
