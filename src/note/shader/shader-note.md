@@ -161,3 +161,30 @@ T mix(T x, T y, float a);
 ```
 result = x * (1.0 - a) + y * a;
 ```
+
+### clamp
+
+> 在图形编程中，clamp 函数常用于确保值在一定范围内，例如在颜色计算、法线计算等方面。
+
+```glsl
+T clamp(T x, T minVal, T maxVal);
+```
+
+这里，T 是要进行限制的值的类型，可以是 float、vec2、vec3、vec4 等。参数 x 是要进行限制的值，而 minVal 和 maxVal 分别是允许的最小和最大值。
+
+clamp 函数的计算方式为：
+
+```glsl
+result = min(max(x, minVal), maxVal);
+```
+
+这意味着如果 x 小于 minVal，则结果为 minVal；如果 x 大于 maxVal，则结果为 maxVal；否则结果为 x。
+
+示例
+
+```glsl
+float result1 = clamp(2.5, 0.0, 1.0);  // 结果为 1.0
+vec3 result2 = clamp(vec3(0.2, -1.0, 0.8), vec3(0.0, -0.5, 0.0), vec3(1.0, 0.5, 1.0));  // 结果为 (0.2, -0.5, 0.8)
+```
+
+SDF-符号距离函数 ???
