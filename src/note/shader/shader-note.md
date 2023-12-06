@@ -188,3 +188,23 @@ vec3 result2 = clamp(vec3(0.2, -1.0, 0.8), vec3(0.0, -0.5, 0.0), vec3(1.0, 0.5, 
 ```
 
 SDF-符号距离函数 ???
+
+### fract
+
+> 用于返回一个数的小数部分，即去除整数部分后的部分。
+
+```glsl
+float fract(float x);
+vec2 fract(vec2 x);
+vec3 fract(vec3 x);
+vec4 fract(vec4 x);
+```
+
+- 对于标量（float），fract 返回输入值 x 的小数部分。
+- 对于向量（vec2、vec3、vec4），fract 分别返回向量中每个分量的小数部分。
+
+```glsl
+float result = fract(3.75); // 结果为 0.75
+```
+
+在图形编程中，fract 常用于创建周期性的效果，如循环纹理映射或动画。通过获取时间的小数部分，可以实现周期性的变化，而不受时间的整数部分影响。
