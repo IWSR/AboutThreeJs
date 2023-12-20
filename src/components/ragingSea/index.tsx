@@ -1,6 +1,6 @@
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import vertexShader from "./shader/water/water.vert?raw";
 import fragmentShader from "./shader/water/water.frag?raw";
@@ -32,16 +32,14 @@ function RagingSea() {
       },
     });
 
-  const uniforms = useMemo(() => {
-    return {
-      uBigWavesElevation: { value: uBigWavesElevation },
-      uBigWavesFrequency: {
-        value: new THREE.Vector2(uBigWavesFrequencyX, uBigWavesFrequencyY),
-      },
-      uTime: { value: 0 },
-      uBigWavesSpeed: { value: 0.75 },
-    };
-  }, [uBigWavesElevation, uBigWavesFrequencyX, uBigWavesFrequencyY]);
+  const uniforms = useRef({
+    uBigWavesElevation: { value: 0.2 },
+    uBigWavesFrequency: {
+      value: new THREE.Vector2(4, 1.5),
+    },
+    uTime: { value: 0 },
+    uBigWavesSpeed: { value: 0.75 },
+  });
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
@@ -63,7 +61,7 @@ function RagingSea() {
           ref={shaderMaterialRef}
           fragmentShader={fragmentShader}
           vertexShader={vertexShader}
-          uniforms={uniforms}
+          uniforms={uniforms.current}
         />
       </mesh>
       <OrbitControls />
