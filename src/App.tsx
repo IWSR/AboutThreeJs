@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
-import { useControls } from "leva";
+import { useControls, Leva } from "leva";
 // import TextureTest from "./components/texture";
 // import MaterialTest from "./components/material";
 // import LightTest from "./components/lights";
@@ -28,6 +28,7 @@ function App() {
   });
   return (
     <div id="canvas-container">
+      <Leva fill />
       <Canvas
         shadows={{
           enabled, // 没生效。。

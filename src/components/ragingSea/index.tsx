@@ -10,35 +10,99 @@ function RagingSea() {
   const planeRef = useRef<THREE.Mesh | null>(null);
   const shaderMaterialRef = useRef<THREE.ShaderMaterial | null>(null);
 
-  const { uBigWavesElevation, uBigWavesFrequencyX, uBigWavesFrequencyY } =
-    useControls({
-      uBigWavesElevation: {
-        value: 0.2,
-        min: 0,
-        max: 1,
-        step: 0.001,
-      },
-      uBigWavesFrequencyX: {
-        value: 4,
-        min: 0,
-        max: 10,
-        step: 0.001,
-      },
-      uBigWavesFrequencyY: {
-        value: 1.5,
-        min: 0,
-        max: 10,
-        step: 0.001,
-      },
-    });
+  const {
+    uBigWavesElevation,
+    uBigWavesFrequencyX,
+    uBigWavesFrequencyY,
+    uBigWavesSpeed,
+    uDepthColor,
+    uSurfaceColor,
+    uColorOffset,
+    uColorMultiplier,
+    uSmallWavesElevation,
+    uSmallWavesFrequency,
+    uSmallWavesSpeed,
+    uSmallIterations,
+  } = useControls({
+    uBigWavesElevation: {
+      value: 0.2,
+      min: 0,
+      max: 1,
+      step: 0.001,
+    },
+    uBigWavesFrequencyX: {
+      value: 4,
+      min: 0,
+      max: 10,
+      step: 0.001,
+    },
+    uBigWavesFrequencyY: {
+      value: 1.5,
+      min: 0,
+      max: 10,
+      step: 0.001,
+    },
+    uBigWavesSpeed: {
+      value: 0.75,
+      min: 0,
+      max: 4,
+      step: 0.001,
+    },
+    uDepthColor: "#186691",
+    uSurfaceColor: "#9bd8ff",
+    uColorOffset: {
+      value: 0.25,
+      min: 0,
+      max: 1,
+      step: 0.001,
+    },
+    uColorMultiplier: {
+      value: 2,
+      min: 0,
+      max: 10,
+      step: 0.001,
+    },
+    uSmallWavesElevation: {
+      value: 0.15,
+      min: 0,
+      max: 1,
+      step: 0.001,
+    },
+    uSmallWavesFrequency: {
+      value: 3.0,
+      min: 0,
+      max: 30,
+      step: 0.001,
+    },
+    uSmallWavesSpeed: {
+      value: 0.2,
+      min: 0,
+      max: 4,
+      step: 0.001,
+    },
+    uSmallIterations: {
+      value: 4.0,
+      min: 0,
+      max: 5,
+      step: 1,
+    },
+  });
 
   const uniforms = useRef({
-    uBigWavesElevation: { value: 0.2 },
+    uBigWavesElevation: { value: uBigWavesElevation },
     uBigWavesFrequency: {
-      value: new THREE.Vector2(4, 1.5),
+      value: new THREE.Vector2(uBigWavesFrequencyX, uBigWavesFrequencyY),
     },
     uTime: { value: 0 },
-    uBigWavesSpeed: { value: 0.75 },
+    uBigWavesSpeed: { value: uBigWavesSpeed },
+    uDepthColor: { value: new THREE.Color(uDepthColor) },
+    uSurfaceColor: { value: new THREE.Color(uSurfaceColor) },
+    uColorOffset: { value: uColorOffset },
+    uColorMultiplier: { value: uColorMultiplier },
+    uSmallWavesElevation: { value: uSmallWavesElevation },
+    uSmallWavesFrequency: { value: uSmallWavesFrequency },
+    uSmallWavesSpeed: { value: uSmallWavesSpeed },
+    uSmallIterations: { value: uSmallIterations },
   });
 
   useFrame(({ clock }) => {
@@ -50,13 +114,31 @@ function RagingSea() {
         uBigWavesElevation;
       shaderMaterialRef.current.uniforms.uBigWavesFrequency.value =
         new THREE.Vector2(uBigWavesFrequencyX, uBigWavesFrequencyY);
+      shaderMaterialRef.current.uniforms.uBigWavesSpeed.value = uBigWavesSpeed;
+      shaderMaterialRef.current.uniforms.uDepthColor.value = new THREE.Color(
+        uDepthColor,
+      );
+      shaderMaterialRef.current.uniforms.uSurfaceColor.value = new THREE.Color(
+        uSurfaceColor,
+      );
+      shaderMaterialRef.current.uniforms.uColorOffset.value = uColorOffset;
+      shaderMaterialRef.current.uniforms.uColorMultiplier.value =
+        uColorMultiplier;
+      shaderMaterialRef.current.uniforms.uSmallWavesElevation.value =
+        uSmallWavesElevation;
+      shaderMaterialRef.current.uniforms.uSmallWavesFrequency.value =
+        uSmallWavesFrequency;
+      shaderMaterialRef.current.uniforms.uSmallWavesSpeed.value =
+        uSmallWavesSpeed;
+      shaderMaterialRef.current.uniforms.uSmallIterations.value =
+        uSmallIterations;
     }
   });
 
   return (
     <>
       <mesh ref={planeRef}>
-        <planeGeometry args={[2, 2, 128, 128]} />
+        <planeGeometry args={[2, 2, 512, 512]} />
         <shaderMaterial
           ref={shaderMaterialRef}
           fragmentShader={fragmentShader}
