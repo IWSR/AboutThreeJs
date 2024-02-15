@@ -10,7 +10,8 @@ import { useControls, Leva } from "leva";
 // import PhysicsTest from "./components/physics";
 // import ImportedModels from "./components/importedModel";
 // import Shaders from "./components/shaderTest";
-import RagingSea from "./components/ragingSea";
+// import RagingSea from "./components/ragingSea";
+import RealisticRender from "./components/realisticRender";
 import "./styles/init.less";
 import "./styles/app.less";
 
@@ -49,7 +50,8 @@ function App() {
         {/* <PhysicsTest /> */}
         {/* <ImportedModels /> */}
         {/* <Shaders /> */}
-        <RagingSea />
+        {/* <RagingSea /> */}
+        <RealisticRender />
       </Canvas>
     </div>
   );
