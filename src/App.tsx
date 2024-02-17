@@ -36,6 +36,7 @@ function App() {
           type: shadowMapAlgorithm,
         }}
         onCreated={({ gl, scene }) => {
+          // physicallyCorrectLights 默认为 true
           gl.toneMapping = THREE.ACESFilmicToneMapping;
           gl.outputColorSpace = THREE.SRGBColorSpace;
           scene.background = new THREE.Color("#373740");

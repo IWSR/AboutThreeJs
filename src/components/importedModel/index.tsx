@@ -8,10 +8,10 @@ import { useShadowCameraHelper } from "@/tools";
 
 function Model() {
   const helper = new MMDAnimationHelper();
+
   const result = useLoader(
     MMDLoader,
     "/models/babala/芭芭拉/芭芭拉.pmx",
-    // "/models/YYB/YYB.pmx",
     (loader) => {
       // 自定义加载 需要再再找些例子
       console.log(loader, "wawa");
@@ -21,9 +21,11 @@ function Model() {
       console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
     },
   );
+
   helper.add(result, {
     physics: false,
   });
+
   console.log(result, "result");
 
   return (
@@ -52,20 +54,20 @@ function ImportedModels() {
     },
     directionalLightX: {
       value: 1.23,
-      min: -100,
-      max: 100,
+      min: -10,
+      max: 10,
       step: 0.001,
     },
     directionalLightY: {
       value: 0.66,
-      min: -100,
-      max: 100,
+      min: -10,
+      max: 10,
       step: 0.001,
     },
     directionalLightZ: {
       value: 0,
-      min: -1000,
-      max: 1000,
+      min: -10,
+      max: 10,
       step: 0.001,
     },
   });
