@@ -1,8 +1,9 @@
 // import * as THREE from "three";
-import { useThree } from "@react-three/fiber";
+// import { useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useControls } from "leva";
 import { useEffect } from "react";
+// import { useEffect } from "react";
 
 function RealisticRender() {
   const {
@@ -10,11 +11,12 @@ function RealisticRender() {
     directionalLightX,
     directionalLightY,
     directionalLightZ,
+    setRotationForAxisAngleY,
   } = useControls({
     directionalLightIntensity: {
       value: 1,
       min: 0,
-      max: 1,
+      max: 10,
       step: 0.01,
     },
     directionalLightX: {
@@ -35,18 +37,23 @@ function RealisticRender() {
       max: 1000,
       step: 0.001,
     },
+    setRotationForAxisAngleY: {
+      value: Math.PI * 0.5,
+      min: -Math.PI,
+      max: Math.PI,
+      step: 0.001,
+    },
   });
 
   const { scene } = useGLTF(
     "/models/realisticRender/models/FlightHelmet/glTF/FlightHelmet.gltf",
   );
 
-  const { gl } = useThree();
-
-  // init
   useEffect(() => {
-    console.log(gl, "gl");
-  });
+    scene.scale.set(10, 10, 10);
+    scene.position.set(0, -4, 0);
+    scene.rotation.y = setRotationForAxisAngleY;
+  }, [scene, setRotationForAxisAngleY]);
 
   return (
     <>
