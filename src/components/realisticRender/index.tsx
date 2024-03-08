@@ -2,7 +2,7 @@
  * @Author: your Name
  * @Date: 2024-02-18 03:10:24
  * @LastEditors: your Name
- * @LastEditTime: 2024-03-09 01:04:09
+ * @LastEditTime: 2024-03-09 01:42:58
  * @Description:
  */
 import * as THREE from "three";
@@ -72,6 +72,16 @@ function RealisticRender() {
   useEffect(() => {
     if (environmentMap) {
       scene.background = environmentMap;
+      scene.traverse((child) => {
+        // 将环境贴图应用到模型上
+        if (
+          child instanceof THREE.Mesh &&
+          child.material instanceof THREE.MeshStandardMaterial
+        ) {
+          console.log(child);
+          child.material.envMap = environmentMap;
+        }
+      });
     }
   }, [scene, environmentMap]);
 
