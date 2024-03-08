@@ -27,19 +27,16 @@ function MaterialTest() {
     "/textures/gradients/5.jpg",
   ]);
 
-  const [envMap] = useLoader<THREE.CubeTextureLoader, string[]>(
-    THREE.CubeTextureLoader,
+  const [envMap] = useLoader(THREE.CubeTextureLoader, [
     [
-      [
-        "/textures/environmentMaps/0/px.jpg",
-        "/textures/environmentMaps/0/nx.jpg",
-        "/textures/environmentMaps/0/py.jpg",
-        "/textures/environmentMaps/0/ny.jpg",
-        "/textures/environmentMaps/0/pz.jpg",
-        "/textures/environmentMaps/0/nz.jpg",
-      ],
+      "/textures/environmentMaps/0/px.jpg",
+      "/textures/environmentMaps/0/nx.jpg",
+      "/textures/environmentMaps/0/py.jpg",
+      "/textures/environmentMaps/0/ny.jpg",
+      "/textures/environmentMaps/0/pz.jpg",
+      "/textures/environmentMaps/0/nz.jpg",
     ],
-  );
+  ]);
 
   const cache = useRef<MaterialCachesTypes>({
     MeshBasicMaterial: new THREE.MeshBasicMaterial(),

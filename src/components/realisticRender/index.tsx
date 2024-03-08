@@ -1,5 +1,12 @@
-// import * as THREE from "three";
-// import { useThree } from "@react-three/fiber";
+/*
+ * @Author: your Name
+ * @Date: 2024-02-18 03:10:24
+ * @LastEditors: your Name
+ * @LastEditTime: 2024-03-09 01:04:09
+ * @Description:
+ */
+import * as THREE from "three";
+import { useThree, useLoader } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useControls } from "leva";
 import { useEffect } from "react";
@@ -45,15 +52,34 @@ function RealisticRender() {
     },
   });
 
-  const { scene } = useGLTF(
+  const { scene } = useThree();
+
+  const gltf = useGLTF(
     "/models/realisticRender/models/FlightHelmet/glTF/FlightHelmet.gltf",
   );
 
+  const [environmentMap] = useLoader(THREE.CubeTextureLoader, [
+    [
+      "/textures/environmentMaps/0/px.jpg",
+      "/textures/environmentMaps/0/nx.jpg",
+      "/textures/environmentMaps/0/py.jpg",
+      "/textures/environmentMaps/0/ny.jpg",
+      "/textures/environmentMaps/0/pz.jpg",
+      "/textures/environmentMaps/0/nz.jpg",
+    ],
+  ]);
+
   useEffect(() => {
-    scene.scale.set(10, 10, 10);
-    scene.position.set(0, -4, 0);
-    scene.rotation.y = setRotationForAxisAngleY;
-  }, [scene, setRotationForAxisAngleY]);
+    if (environmentMap) {
+      scene.background = environmentMap;
+    }
+  }, [scene, environmentMap]);
+
+  useEffect(() => {
+    gltf.scene.scale.set(10, 10, 10);
+    gltf.scene.position.set(0, -4, 0);
+    gltf.scene.rotation.y = setRotationForAxisAngleY;
+  }, [gltf.scene, setRotationForAxisAngleY]);
 
   return (
     <>
@@ -61,7 +87,7 @@ function RealisticRender() {
         <sphereGeometry args={[1, 32, 32]} />
         <meshStandardMaterial />
       </mesh> */}
-      <primitive object={scene} />
+      <primitive object={gltf.scene} />
       <directionalLight
         intensity={directionalLightIntensity}
         color={"#ffffff"}
