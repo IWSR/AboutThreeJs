@@ -2,7 +2,7 @@
  * @Author: your Name
  * @Date: 2024-02-18 03:10:24
  * @LastEditors: your Name
- * @LastEditTime: 2024-03-09 01:42:58
+ * @LastEditTime: 2024-03-20 22:06:48
  * @Description:
  */
 import * as THREE from "three";
@@ -10,7 +10,6 @@ import { useThree, useLoader } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useControls } from "leva";
 import { useEffect } from "react";
-// import { useEffect } from "react";
 
 function RealisticRender() {
   const {
@@ -19,6 +18,9 @@ function RealisticRender() {
     directionalLightY,
     directionalLightZ,
     setRotationForAxisAngleY,
+    envMapIntensity,
+    toneMapping,
+    toneMappingExposure,
   } = useControls({
     directionalLightIntensity: {
       value: 1,
@@ -50,9 +52,41 @@ function RealisticRender() {
       max: Math.PI,
       step: 0.001,
     },
+    envMapIntensity: {
+      value: 5,
+      min: 0,
+      max: 10,
+      step: 0.001,
+    },
+    toneMapping: {
+      options: {
+        NoToneMapping: THREE.NoToneMapping,
+        LinearToneMapping: THREE.LinearToneMapping,
+        ReinhardToneMapping: THREE.ReinhardToneMapping,
+        CineonToneMapping: THREE.CineonToneMapping,
+        ACESFilmicToneMapping: THREE.ACESFilmicToneMapping,
+        // AgXToneMapping: THREE.AgXToneMapping,
+        // NeutralToneMapping: THREE.NeutralToneMapping,
+        CustomToneMapping: THREE.CustomToneMapping,
+      },
+    },
+    toneMappingExposure: {
+      value: 5,
+      min: 0,
+      max: 10,
+      step: 0.001,
+    },
   });
 
-  const { scene } = useThree();
+  // gl 为 renderer
+  const { gl, scene } = useThree();
+  console.log(gl.outputColorSpace, "gl");
+  // https://discourse.threejs.org/t/updates-to-color-management-in-three-js-r152/50791?page=2
+  // gl.outputEncoding 废弃
+  gl.outputColorSpace = THREE.SRGBColorSpace;
+  gl.toneMappingExposure = 3;
+  gl.shadowMap.enabled = true;
+  gl.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const gltf = useGLTF(
     "/models/realisticRender/models/FlightHelmet/glTF/FlightHelmet.gltf",
@@ -70,20 +104,41 @@ function RealisticRender() {
   ]);
 
   useEffect(() => {
+    /**
+     * https://threejs.org/docs/#api/en/constants/Renderer
+     * THREE.NoToneMapping 的可选值
+     * https://docs.pmnd.rs/react-three-fiber/api/canvas
+     * renderer 的设置中 antialias 默认为 true
+     * 该项与抗锯齿相关（SSAA FSAA MSAA）
+     */
+    gl.toneMapping = toneMapping;
+    gl.toneMappingExposure = toneMappingExposure;
+  }, [gl, toneMapping, toneMappingExposure]);
+
+  useEffect(() => {
     if (environmentMap) {
+      // environmentMap.encoding = THREE.sRGBEncoding;
+      // 贴图编码
+      environmentMap.encoding = THREE.SRGBColorSpace;
       scene.background = environmentMap;
+      // 将环境贴图应用到模型上 实现1
+      scene.environment = environmentMap;
       scene.traverse((child) => {
-        // 将环境贴图应用到模型上
         if (
           child instanceof THREE.Mesh &&
           child.material instanceof THREE.MeshStandardMaterial
         ) {
           console.log(child);
-          child.material.envMap = environmentMap;
+          // 将环境贴图应用到模型上 实现2（与 1 等价）
+          // child.material.envMap = environmentMap;
+          child.material.envMapIntensity = envMapIntensity;
+          // 对模型自身加入阴影
+          child.castShadow = true;
+          child.receiveShadow = true;
         }
       });
     }
-  }, [scene, environmentMap]);
+  }, [scene, environmentMap, envMapIntensity]);
 
   useEffect(() => {
     gltf.scene.scale.set(10, 10, 10);
@@ -99,6 +154,13 @@ function RealisticRender() {
       </mesh> */}
       <primitive object={gltf.scene} />
       <directionalLight
+        castShadow
+        // shadow={{
+        // camera: {
+        //   far: 15
+        // },
+        // mapSize: new THREE.Vector2(1024, 1024)
+        // }}
         intensity={directionalLightIntensity}
         color={"#ffffff"}
         position={[directionalLightX, directionalLightY, directionalLightZ]}
