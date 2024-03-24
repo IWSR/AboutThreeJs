@@ -1,3 +1,10 @@
+/*
+ * @Author: your Name
+ * @Date: 2024-02-18 03:10:24
+ * @LastEditors: your Name
+ * @LastEditTime: 2024-03-24 23:54:24
+ * @Description:
+ */
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { useControls, Leva } from "leva";
@@ -11,7 +18,8 @@ import { useControls, Leva } from "leva";
 // import ImportedModels from "./components/importedModel";
 // import Shaders from "./components/shaderTest";
 // import RagingSea from "./components/ragingSea";
-import RealisticRender from "./components/realisticRender";
+// import RealisticRender from "./components/realisticRender";
+import PostProcessing from "./components/postProcessing";
 import "./styles/init.less";
 import "./styles/app.less";
 
@@ -37,8 +45,8 @@ function App() {
         }}
         onCreated={({ gl, scene }) => {
           // physicallyCorrectLights 默认为 true
-          gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.outputColorSpace = THREE.SRGBColorSpace;
+          // gl.toneMapping = THREE.ACESFilmicToneMapping; // RealisticRender 内有解释
+          gl.outputColorSpace = THREE.SRGBColorSpace; // 色彩空间
           scene.background = new THREE.Color("#373740");
         }}
       >
@@ -52,7 +60,8 @@ function App() {
         {/* <ImportedModels /> */}
         {/* <Shaders /> */}
         {/* <RagingSea /> */}
-        <RealisticRender />
+        {/* <RealisticRender /> */}
+        <PostProcessing />
       </Canvas>
     </div>
   );
