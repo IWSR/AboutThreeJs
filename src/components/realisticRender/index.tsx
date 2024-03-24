@@ -2,16 +2,18 @@
  * @Author: your Name
  * @Date: 2024-02-18 03:10:24
  * @LastEditors: your Name
- * @LastEditTime: 2024-03-20 22:06:48
+ * @LastEditTime: 2024-03-24 20:03:52
  * @Description:
  */
 import * as THREE from "three";
 import { useThree, useLoader } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useControls } from "leva";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 function RealisticRender() {
+  const shadowRef = useRef<THREE.DirectionalLight | null>(null);
+
   const {
     directionalLightIntensity,
     directionalLightX,
@@ -58,18 +60,29 @@ function RealisticRender() {
       max: 10,
       step: 0.001,
     },
+    // Tone Mapping通常用于将渲染出的HDR图像转换为LDR图像
+    // 直接看效果就行
     toneMapping: {
       options: {
-        NoToneMapping: THREE.NoToneMapping,
-        LinearToneMapping: THREE.LinearToneMapping,
-        ReinhardToneMapping: THREE.ReinhardToneMapping,
-        CineonToneMapping: THREE.CineonToneMapping,
-        ACESFilmicToneMapping: THREE.ACESFilmicToneMapping,
+        NoToneMapping: THREE.NoToneMapping, // 不进行色调映射
+        LinearToneMapping: THREE.LinearToneMapping, // 线性映射
+        ReinhardToneMapping: THREE.ReinhardToneMapping, // Reinhard算法
+        CineonToneMapping: THREE.CineonToneMapping, // Filmic算法
+        ACESFilmicToneMapping: THREE.ACESFilmicToneMapping, // ACES Filmic算法
         // AgXToneMapping: THREE.AgXToneMapping,
         // NeutralToneMapping: THREE.NeutralToneMapping,
-        CustomToneMapping: THREE.CustomToneMapping,
+        CustomToneMapping: THREE.CustomToneMapping, // 需要自己写 glsl
       },
     },
+    /**
+     * 用于控制色调映射曝光的属性。它是一个浮点数，其值范围为0到1。
+
+     * 值越高，图像越亮。
+
+     * 值越低，图像越暗。
+
+     * 默认值为0.5，表示中间曝光。
+    */
     toneMappingExposure: {
       value: 5,
       min: 0,
@@ -146,6 +159,14 @@ function RealisticRender() {
     gltf.scene.rotation.y = setRotationForAxisAngleY;
   }, [gltf.scene, setRotationForAxisAngleY]);
 
+  useEffect(() => {
+    if (shadowRef.current) {
+      shadowRef.current.shadow.camera.far = 15;
+      shadowRef.current.shadow.mapSize = new THREE.Vector2(1024, 1024);
+      shadowRef.current.updateMatrixWorld(); // updateMatrixWorld() 方法会强制更新光源及其阴影的矩阵
+    }
+  }, [shadowRef]);
+
   return (
     <>
       {/* <mesh>
@@ -154,13 +175,8 @@ function RealisticRender() {
       </mesh> */}
       <primitive object={gltf.scene} />
       <directionalLight
+        ref={shadowRef}
         castShadow
-        // shadow={{
-        // camera: {
-        //   far: 15
-        // },
-        // mapSize: new THREE.Vector2(1024, 1024)
-        // }}
         intensity={directionalLightIntensity}
         color={"#ffffff"}
         position={[directionalLightX, directionalLightY, directionalLightZ]}
