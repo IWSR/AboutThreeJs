@@ -2,14 +2,26 @@
  * @Author: your Name
  * @Date: 2024-02-18 03:10:24
  * @LastEditors: your Name
- * @LastEditTime: 2024-03-25 00:01:45
+ * @LastEditTime: 2024-04-14 05:58:38
  * @Description:
  */
 import * as THREE from "three";
-import { useThree, useLoader } from "@react-three/fiber";
+import { useThree, useLoader, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
+/**
+ * Why postprocessing and not three/examples/jsm/postprocessing?
+ * https://github.com/pmndrs/postprocessing#performance
+ * https://pmndrs.github.io/postprocessing/public/docs/
+ */
+/**
+ * https://docs.pmnd.rs/react-postprocessing/effects/dot-screen
+ */
+// import { EffectComposer, DotScreen, Noise } from '@react-three/postprocessing';
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass.js";
 import { useControls } from "leva";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 
 function PostProcessing() {
   const shadowRef = useRef<THREE.DirectionalLight | null>(null);
@@ -92,7 +104,7 @@ function PostProcessing() {
   });
 
   // gl 为 renderer
-  const { gl, scene } = useThree();
+  const { gl, scene, camera, size } = useThree();
   console.log(gl.outputColorSpace, "gl");
   // https://discourse.threejs.org/t/updates-to-color-management-in-three-js-r152/50791?page=2
   // gl.outputEncoding 废弃
@@ -100,6 +112,21 @@ function PostProcessing() {
   gl.toneMappingExposure = 3;
   gl.shadowMap.enabled = true;
   gl.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const [effectComposer] = useMemo(() => {
+    const { width, height } = size;
+    const effectComposer = new EffectComposer(gl);
+    effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    effectComposer.setSize(width, height);
+    effectComposer.addPass(new RenderPass(scene, camera));
+    const dotScreenPass = new DotScreenPass();
+    effectComposer.addPass(dotScreenPass);
+    return [effectComposer];
+  }, [size, camera, gl, scene]);
+
+  useFrame((_, delta) => {
+    effectComposer.render(delta);
+  }, 1); // 权重需要看下是怎么工作的
 
   const gltf = useGLTF(
     "/models/postProcessing/models/DamagedHelmet/glTF/DamagedHelmet.gltf",
@@ -169,10 +196,9 @@ function PostProcessing() {
 
   return (
     <>
-      {/* <mesh>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial />
-      </mesh> */}
+      {/* // <EffectComposer>
+    //   <DotScreen />
+    //   <Noise /> */}
       <primitive object={gltf.scene} />
       <directionalLight
         ref={shadowRef}
@@ -182,6 +208,7 @@ function PostProcessing() {
         position={[directionalLightX, directionalLightY, directionalLightZ]}
       />
       <OrbitControls />
+      {/* // </EffectComposer> */}
     </>
   );
 }
