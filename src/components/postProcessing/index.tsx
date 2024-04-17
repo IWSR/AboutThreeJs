@@ -2,7 +2,7 @@
  * @Author: your Name
  * @Date: 2024-02-18 03:10:24
  * @LastEditors: your Name
- * @LastEditTime: 2024-04-14 05:58:38
+ * @LastEditTime: 2024-04-17 20:26:33
  * @Description:
  */
 import * as THREE from "three";
@@ -20,6 +20,11 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass.js";
+import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { RGBShiftShader } from "three/examples/jsm/shaders/RGBShiftShader.js";
+import { GammaCorrectionShader } from "three/examples/jsm/shaders/GammaCorrectionShader.js";
+import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass.js";
 import { useControls } from "leva";
 import { useEffect, useRef, useMemo } from "react";
 
@@ -115,14 +120,49 @@ function PostProcessing() {
 
   const [effectComposer] = useMemo(() => {
     const { width, height } = size;
-    const effectComposer = new EffectComposer(gl);
+    const renderTarget = new THREE.WebGLRenderTarget(800, 600, {
+      samples: gl.getPixelRatio() === 1 ? 2 : 0, //Defines the count of MSAA samples. Can only be used with WebGL 2(对浏览器有兼容). Default is 0
+    });
+    const effectComposer = new EffectComposer(gl, renderTarget);
     effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     effectComposer.setSize(width, height);
     effectComposer.addPass(new RenderPass(scene, camera));
     const dotScreenPass = new DotScreenPass();
+    dotScreenPass.enabled = false;
     effectComposer.addPass(dotScreenPass);
+    // 抗锯齿算法
+    const smaaPass = new SMAAPass();
+    effectComposer.addPass(smaaPass);
+    /**
+     * 故障
+     */
+    const glitchPass = new GlitchPass();
+    // glitchPass.goWild = true;
+    glitchPass.enabled = true;
+    effectComposer.addPass(glitchPass);
+
+    /**
+     * RGBShift is availabe as a shader
+     * RGB通道漂移
+     */
+    const rgbShiftPass = new ShaderPass(RGBShiftShader);
+    rgbShiftPass.enabled = true;
+    effectComposer.addPass(rgbShiftPass);
+    /**
+     * GammaCorrectionShader will converter the linear ebcoding to a sRGB encoding
+     * 在 renderer 上设置的 outputColorSpace 对此不生效
+     */
+    const gammaCorrectionShader = new ShaderPass(GammaCorrectionShader);
+    effectComposer.addPass(gammaCorrectionShader); // 会变亮
+    /**
+     * By default EffectComposer is using a WebGLRenderTarget without the antialias
+     */
     return [effectComposer];
   }, [size, camera, gl, scene]);
+
+  useEffect(() => {
+    console.log(size, "size change");
+  }, [size]);
 
   useFrame((_, delta) => {
     effectComposer.render(delta);

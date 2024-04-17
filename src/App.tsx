@@ -2,7 +2,7 @@
  * @Author: your Name
  * @Date: 2024-02-18 03:10:24
  * @LastEditors: your Name
- * @LastEditTime: 2024-03-24 23:54:24
+ * @LastEditTime: 2024-04-17 20:07:33
  * @Description:
  */
 import * as THREE from "three";
@@ -38,6 +38,7 @@ function App() {
   return (
     <div id="canvas-container">
       <Leva fill />
+      {/* https://docs.pmnd.rs/react-three-fiber/api/canvas */}
       <Canvas
         shadows={{
           enabled, // 没生效。。
