@@ -8,6 +8,7 @@ varying vec2 vUv;
 varying float elevation;
 
 void main() {
+  // https://learnopengl-cn.github.io/01%20Getting%20started/08%20Coordinate%20Systems/
   // transform the position 矩阵
   // modelMatrix apply transformations reative to the Mesh (position, rotation, scale)
   // viewMatrix apply transformations relative to the camera (position, rotation, field of view, near, far)
